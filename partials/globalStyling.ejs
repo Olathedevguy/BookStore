@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <style>
+        /* Reset and Global Styles */
         * {
             margin: 0;
             padding: 0;
@@ -9,174 +10,184 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        .home{
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            color: #222;
+        }
+
+        /* Main Container */
+        .home {
             padding: 20px;
         }
 
-        .home h1{
-            color: aqua;
+        .home h1 {
+            color: #007bff;
+            font-size: 24px;
         }
-        /* General Page Styling */
-.upload {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
 
-/* Form Container */
-.container {
-    background: #fff;
-    padding: 20px;
-    width: 350px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
+        /* Upload Section */
+        .upload {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-/* Headings */
-h2 {
-    margin-bottom: 15px;
-    color: #333;
-}
+        /* Form Container */
+        .container {
+            background: white;
+            padding: 25px;
+            width: 360px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
-/* Form Groups */
-.form-group {
-    text-align: left;
-    margin-bottom: 15px;
-}
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 20px;
+        }
 
-label {
-    font-size: 14px;
-    font-weight: bold;
-    color: #555;
-    display: block;
-    margin-bottom: 5px;
-}
+        /* Form Groups */
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
 
-/* Input Fields */
-input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    outline: none;
-}
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #444;
+            display: block;
+            margin-bottom: 5px;
+        }
 
-input[type="text"]:focus {
-    border-color: #007bff;
-}
+        /* Input Fields */
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1.5px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
 
-/* Checkbox Group */
-.checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            border-color: #007bff;
+            box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.3);
+        }
 
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
-    cursor: pointer;
-}
+        /* Checkbox Group */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
 
-/* Submit Button */
-button {
-    width: 100%;
-    background: #007bff;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
 
-button:hover {
-    background: #0056b3;
-}
+        /* Submit Button */
+        button {
+            width: 100%;
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-/* General Page Styling */
-.book-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
+        button:hover {
+            background: #0056b3;
+            box-shadow: 0px 4px 6px rgba(0, 123, 255, 0.2);
+        }
 
-/* Container */
-.book-container {
-    text-align: center;
-    width: 90%;
-    max-width: 800px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
+        /* Book Section */
+        .book-body {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
 
-/* Heading */
-h2 {
-    color: #333;
-    margin-bottom: 20px;
-}
+        .book-container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-/* Grid Layout */
-.book-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-}
+        /* Book Grid */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
 
-/* Book Card */
-.book-card {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
+        /* Book Card */
+        .book-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: 0.3s;
+        }
 
-/* Book Cover */
-.book-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 5px;
-}
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
 
-/* Book Title */
-.book-card h3 {
-    margin: 10px 0;
-    font-size: 18px;
-    color: #333;
-}
+        /* Book Cover */
+        .book-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
 
-/* Author */
-.book-card p {
-    font-size: 14px;
-    color: #666;
-}
+        /* Book Title */
+        .book-card h3 {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #222;
+        }
 
-/* Genres */
-.genres {
-    font-size: 13px;
-    color: #007bff;
-    font-weight: bold;
-}
+        /* Author */
+        .book-card p {
+            font-size: 14px;
+            color: #555;
+        }
 
-
+        /* Genres */
+        .genres {
+            font-size: 13px;
+            color: #007bff;
+            font-weight: bold;
+        }
     </style>
 </head>
+<body>
+</body>
 </html>
