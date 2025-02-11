@@ -4,31 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookStore | <%= title %></title>
-    <%- include('../partials/globalStyling.ejs')%>
+    <link rel="stylesheet" href="/styles/books.css"> 
+    <%- include('../partials/globalStyling.ejs') %>
 </head>
 <body>
     <%- include("../partials/navbar.ejs") -%>
-    <%- include("../partials/filter.ejs") -%>
+    
+
     <div class="book-body">
-        
+        <%- include("../partials/filter.ejs") -%>
         <div class="book-container">
+            <h1 class="book-header">Available Books</h1>
             
             <div class="book-grid">
-                <% if (books.length>0) { %>
-                    <% books.forEach(book => { %>
-                        <!-- <h2>Available Books</h2> -->
-                <div class="book-card">
-                    <img src="book-cover1.jpg" alt="Book Cover">
-                    <h3><%= book.title %></h3>
-                    <p><strong>Author:</strong> <%= book.author %></p>
-                    <p class="genres">Genres: <%= book.genre %></p>
-                </div> <% });%>
-                <% }else{%>
-                    <div>
-                        <p>No Books Available</p>
-                    </div>
+                <% if (books.length > 0) { %>
+                    <% books.forEach((book) => { %>
+                        <div class="book-card">
+                            <img class="book-image" src="<%= book.imagePath %>" alt="Book Cover">
+                            
+                            <div class="book-info">
+                                <h3 class="book-title"><%= book.title %></h3>
+                                <p class="book-author"><strong>Author:</strong> <%= book.author %></p>
+                                <p class="book-genre"><strong>Genre:</strong> <%= book.genre %></p>
+                                <p class="book-genre"><strong>Last Update:</strong> <%= new Date(book.updatedAt).toLocaleString('en-NG', {
+                                          year: "numeric", 
+                                          month: "long", 
+                                        weekday: "long", 
+                                }) %></p>
+                                
+                                <a class="book-button" href="/books/<%= book._id %>">View Details</a>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p class="no-books">No Books Available</p>
                 <% } %>
-    
             </div>
         </div>
     </div>

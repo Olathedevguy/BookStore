@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookStore | <%= title %></title>
+    <%- include('../partials/globalStyling.ejs')%>
+</head>
+<%- include("../partials/navbar.ejs") -%>
+<body>
+    <div class="book-detail-container">
+        <img class="book-detail-image" src="<%= book.imagePath %>" alt="Book Cover">
+        
+        <div class="book-info">
+            <h1 class="book-detail-title"><%= book.title %></h1>
+            <p class="book-detail-author"><strong>Author:</strong> <%= book.author %></p>
+            <p class="book-detail-genre"><strong>Genre:</strong> <%= book.genre %></p>
+            <p class="book-detail-genre"><strong>Last Update:</strong> <%= new Date(book.updatedAt).toLocaleString('en-NG', {
+                year: "numeric", 
+                month: "long", 
+              weekday: "long",
+              day: "numeric", 
+    hour: "2-digit", 
+    minute: "2-digit",
+    hour12: true 
+      }) %></p>
+        </div>
+        <button class="delete" data-doc="<%= book._id %>">Delete</button>
+    </div>
+</body>
+
+<script>
+    const deleteBtn = document.querySelector("button.delete")
+
+    deleteBtn.addEventListener("click",(e)=>{
+        const endPoint = `/books/${deleteBtn.dataset.doc}`
+
+        fetch(endPoint, {
+            method: "DELETE"
+        })
+        .then((response)=>response.json())
+        .then((data)=> window.location.href = data.redirectUrl)
+        .catch((err)=>console.error("Something went wrong", err))
+    })
+</script>
+</html>
