@@ -26,11 +26,11 @@
                                 <h3 class="book-title"><%= book.title %></h3>
                                 <p class="book-author"><strong>Author:</strong> <%= book.author %></p>
                                 <p class="book-genre"><strong>Genre:</strong> <%= book.genre %></p>
-                                <p class="book-genre"><strong>Last Update:</strong> <%= new Date(book.updatedAt).toLocaleString('en-NG', {
+                                <!-- <p class="book-genre"><strong>Last Update:</strong> <%= new Date(book.updatedAt).toLocaleString('en-NG', {
                                           year: "numeric", 
                                           month: "long", 
                                         weekday: "long", 
-                                }) %></p>
+                                }) %></p> -->
                                 
                                 <a class="book-button" href="/books/<%= book._id %>">View Details</a>
                             </div>

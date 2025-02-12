@@ -3,10 +3,13 @@ import mongoose from "mongoose";
 import Book from "./model/storeModel.js";
 import multer from "multer";
 import path from "path"
+import methodOverride from "method-override"
+import { title } from "process";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'))
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/')
@@ -23,7 +26,7 @@ const dbURI =
   "mongodb+srv://olamide:olamide@store.pkj3w.mongodb.net/Bookstore?retryWrites=true&w=majority&appName=Store";
 
 app.listen(port, () => {
-  console.log(`\nServer is active on ${port}`);
+  console.log(`\nServer is active on ${port}, link: localhost:${port}`);
 });
 
 mongoose
@@ -97,6 +100,34 @@ app.get('/books/:id', async (req, res)=>{
   } catch(err){
     console.log('eRROR FETCHING BOOk',err)
   }
+})
+
+app.get('/books/edit/:id', async (req, res)=>{
+  try {
+  const {id} = req.params;
+  const book = await Book.findById(id)
+  if(!book)return res.status(400).send('<p>Book not found</p>')
+    res.render('Edit', {title: 'Edit', book})
+  } catch (error) {
+    console.error(error)
+    res.status(500).send('<p>Internal Server Error</p>')
+  }
+
+})
+
+app.put('/books/edit/:id', async (req, res)=>{
+  
+  try{
+    const {id} = req.params;
+    const book = await Book.findByIdAndUpdate(id, {
+      title: req.body.title,
+      author: req.body.author,
+    }, {new: true})
+    if(!book)return res.status(404).send('<p>book not found</p>')
+      res.json({ message: "Book updated successfully", book})
+  }catch(err) {
+    console.error(err)
+  };
 })
 
 app.delete('/books/:id', async (req, res) => {

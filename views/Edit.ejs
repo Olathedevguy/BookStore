@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Haven | <%= title %></title>
+    <%- include('../partials/globalStyling.ejs')%>
+</head>
+<body>
+    
+    <%- include("../partials/navbar.ejs") -%>
+    <div class="upload">
+        <div class="container">
+            <h2>Edit "<%= book.title %>" Book</h2>
+            
+            <form id="form" enctype="application/json">
+                
+                <!-- <div class="form-group">
+                    <label for="book-img">Book Cover</label>
+                    <input type="file" id="book-img" name="book-img" required>
+                </div> -->
+
+            <div class="form-group">
+                <label for="bookName">Book Name</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+
+            
+            <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" id="author" name="author" required>
+            </div>
+
+            
+            <!-- <div class="form-group">
+                <label>Genre</label>
+                <div class="checkbox-group">
+                    <% let genres = ["Fiction", "Non-Fiction", "Sci-Fi", "Fantasy", "Mystery", "Romance", "Horror"]; %>
+                    <% genres.forEach((genre)=>{ %>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="genre" value="<%= genre %>">
+                            <span><%= genre %></span>
+                        </label>
+                    <% }); %>
+                </div>
+            </div> -->
+
+            <button class="update" type="submit" data-doc="">Update Book</button>
+        </form>
+    </div>
+</div>
+
+</body>
+<script>
+    document.getElementById('form').addEventListener('submit', (e)=>{
+        e.preventDefault()
+        const bookID = '<%= book._id %>'
+        const title = document.getElementById("title").value;
+    const author = document.getElementById("author").value;
+
+    const formData = { title, author};
+        const endPoint = `/books/edit/${bookID}`
+
+        fetch(endPoint, {
+            method: 'PUT',
+            headers:{ "Content-Type": "application/json"},
+            body: JSON.stringify(formData)
+        }) 
+        .then(result => result.json())
+        .then(response => window.location.href = '/books')
+        .catch(err=>console.log(err))
+
+    })
+</script>
+</html>
