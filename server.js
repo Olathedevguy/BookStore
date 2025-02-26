@@ -1,15 +1,19 @@
-import express from "express";
-import mongoose from "mongoose";
-import Book from "./model/storeModel.js";
-import multer from "multer";
-import path from "path"
-import methodOverride from "method-override"
-import { title } from "process";
+const express = require("express");
+const mongoose = require("mongoose");
+const Book = require("./model/storeModel");
+const multer = require("multer");
+const path = require("path");
+const methodOverride = require("method-override");
+const User = require("./model/User");
+const cookieParser = require("cookie-parser")
+const jwt = require("jsonwebtoken")
+// import { title } from "process";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
+app.use(cookieParser())
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/')
@@ -41,8 +45,9 @@ mongoose
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
+  res.render("index", { title: "Home" , message: "Login Successful", type: "success"});
 });
+
 
 app.get("/books", async (req, res) => {
   try {
@@ -76,7 +81,7 @@ app.post("/upload", upload.single('book-img'), async (req, res, next) => {
   try {
     const book = await Book.create({
       title: req.body.title,
-      title: req.body.title,
+      // title: req.body.title,
       author: req.body.author,
       genre: req.body.genre,
       imagePath: req.file ? "/uploads/" + req.file.filename : null, // Store image path to mongodb
@@ -87,6 +92,77 @@ app.post("/upload", upload.single('book-img'), async (req, res, next) => {
     console.log("Error Uploading book", error);
   }
 });
+
+const handleErr = (err)=>{
+  console.log(err.message, err.code);
+  let errors = {email: "", password: ""}
+  
+  if(err.message === 'incorrect email'){
+      errors.email = 'No account found with this email'
+  }
+  
+  if(err.message === 'incorrect password'){
+      errors.password = 'invalid password'
+  }
+  
+  if(err.code === 11000){
+      errors.email = "That email is already in registered"
+  }
+  
+  if(err.message.includes('user validation failed')){
+      Object.values(err.errors).forEach(({properties})=>{
+          errors[properties.path] = properties.message;
+      })
+  }
+  return {errors};
+  }
+
+
+const maxAge = 3 * 24 * 60 * 60;
+const createToken = (id)=>{
+  return jwt.sign({id}, 'book haven', {
+    expiresIn: maxAge
+  })
+}
+
+
+app.get('/signup', (req, res)=>{
+  res.render('signup', {title:'Sign Up'})
+})
+
+app.post('/signup', async(req, res)=>{
+  try {
+    const {email, password} = req.body;
+    const user = await User.create({email, password});
+    const token = createToken(user._id)
+    res.cookie('signupToken', token, {httpOnly: true, maxAge: maxAge * 1000})
+    res.status(201).json({user: user._id});
+  } catch (error) {
+    const errors = handleErr(error)
+    console.log('failed to create user', errors);
+    res.status(400).json(errors);
+  }
+})
+
+app.get('/login', (req, res)=>{
+  res.render('login', {title: 'Login'})
+})
+
+app.post('/login', async(req, res)=>{
+  const {email, password} = req.body;
+
+  try {
+    const user = await User.login(email, password);
+    const token = createToken(user._id);
+    res.cookie('loginToken', token, {httpOnly: true, maxAge: maxAge * 1000});
+    res.status(200).json({user: user._id});
+  } catch (error) {
+    const errors = handleErr(error);
+    console.log(errors)
+    res.status(400).json(errors);
+  }
+})
+
 
 app.get('/books/:id', async (req, res)=>{
 
@@ -114,6 +190,7 @@ app.get('/books/edit/:id', async (req, res)=>{
   }
 
 })
+
 
 app.put('/books/edit/:id', async (req, res)=>{
   
