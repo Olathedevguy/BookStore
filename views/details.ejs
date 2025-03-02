@@ -27,7 +27,9 @@
         </div>
         
         <button class="edit"><a href="/books/edit/<%= book._id %>">Edit</a></button>
-        <button class="delete" data-doc="<%= book._id %>">Delete</button>
+        <% if(email){ %><button class="delete" data-doc="<%= book._id %>">Delete</button><% } else{ %>
+            <p></p>
+            <% } %>
     </div>
 </body>
 

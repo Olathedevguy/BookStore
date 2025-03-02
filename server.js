@@ -1,29 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Book = require("./model/storeModel");
-const multer = require("multer");
-const path = require("path");
 const methodOverride = require("method-override");
-const User = require("./model/User");
 const cookieParser = require("cookie-parser")
 const jwt = require("jsonwebtoken")
-// import { title } from "process";
+const bookRoute = require('./routes/bookRoute')
+const authRoutes = require('./routes/authRoutes');
+const { requireAuth, byPass } = require("./middleware/authMiddleware");
+
+
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 app.use(cookieParser())
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname))//setting the filename to it's original name
-  }
-})
 
-const upload = multer( {storage: storage} )
+
+
 const port = 3000;
 app.use("/uploads", express.static("uploads"));
 const dbURI =
@@ -44,177 +37,15 @@ mongoose
 
 app.set("view engine", "ejs");
 
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home" , message: "Login Successful", type: "success"});
+app.get("/", byPass, (req, res) => {
+  res.render("index", { title: "Home" , message: "Login Successful", type: "success", email: req.user ? req.user.email : 'Guest'});
 });
 
-
-app.get("/books", async (req, res) => {
-  try {
-    const selectedGenre = req.query.genre || "All";
-    const searchQuery = req.query.title;
-    const books =
-      selectedGenre !== "All"
-        ? await Book.find({ genre: { $regex: selectedGenre } })
-        : searchQuery
-        ? await Book.find({
-            $or: [
-              { title: { $regex: searchQuery, $options: "i" } },
-              { author: { $regex: searchQuery, $options: "i" } },
-            ],
-          })
-        : await Book.find();
-    res.render("books", { title: "Books", books });
-  } catch (error) {
-    console.log("Error fetching books", error);
-  }
-});
-
-app.get("/upload", (req, res) => {
-  res.render("upload", { title: "Upload" });
-});
-
-app.post("/upload", upload.single('book-img'), async (req, res, next) => {
-  console.log("post request made to", req.path);
-  console.log(req.file)
-  // console.log(req.path)
-  try {
-    const book = await Book.create({
-      title: req.body.title,
-      // title: req.body.title,
-      author: req.body.author,
-      genre: req.body.genre,
-      imagePath: req.file ? "/uploads/" + req.file.filename : null, // Store image path to mongodb
-    });
-    res.redirect("/books");
-    console.log("Uploaded Successfully:", book);
-  } catch (error) {
-    console.log("Error Uploading book", error);
-  }
-});
-
-const handleErr = (err)=>{
-  console.log(err.message, err.code);
-  let errors = {email: "", password: ""}
-  
-  if(err.message === 'incorrect email'){
-      errors.email = 'No account found with this email'
-  }
-  
-  if(err.message === 'incorrect password'){
-      errors.password = 'invalid password'
-  }
-  
-  if(err.code === 11000){
-      errors.email = "That email is already in registered"
-  }
-  
-  if(err.message.includes('user validation failed')){
-      Object.values(err.errors).forEach(({properties})=>{
-          errors[properties.path] = properties.message;
-      })
-  }
-  return {errors};
-  }
+app.use(bookRoute);
 
 
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id)=>{
-  return jwt.sign({id}, 'book haven', {
-    expiresIn: maxAge
-  })
-}
+
+app.use(authRoutes)
 
 
-app.get('/signup', (req, res)=>{
-  res.render('signup', {title:'Sign Up'})
-})
 
-app.post('/signup', async(req, res)=>{
-  try {
-    const {email, password} = req.body;
-    const user = await User.create({email, password});
-    const token = createToken(user._id)
-    res.cookie('signupToken', token, {httpOnly: true, maxAge: maxAge * 1000})
-    res.status(201).json({user: user._id});
-  } catch (error) {
-    const errors = handleErr(error)
-    console.log('failed to create user', errors);
-    res.status(400).json(errors);
-  }
-})
-
-app.get('/login', (req, res)=>{
-  res.render('login', {title: 'Login'})
-})
-
-app.post('/login', async(req, res)=>{
-  const {email, password} = req.body;
-
-  try {
-    const user = await User.login(email, password);
-    const token = createToken(user._id);
-    res.cookie('loginToken', token, {httpOnly: true, maxAge: maxAge * 1000});
-    res.status(200).json({user: user._id});
-  } catch (error) {
-    const errors = handleErr(error);
-    console.log(errors)
-    res.status(400).json(errors);
-  }
-})
-
-
-app.get('/books/:id', async (req, res)=>{
-
-  try{  
-  const {id} = req.params;
-  const book = await Book.findById(id.toString())
-
-  if(!book) return res.status(404).send("Book not found")
-    res.render('details', {title: 'details', book})
-
-  } catch(err){
-    console.log('eRROR FETCHING BOOk',err)
-  }
-})
-
-app.get('/books/edit/:id', async (req, res)=>{
-  try {
-  const {id} = req.params;
-  const book = await Book.findById(id)
-  if(!book)return res.status(400).send('<p>Book not found</p>')
-    res.render('Edit', {title: 'Edit', book})
-  } catch (error) {
-    console.error(error)
-    res.status(500).send('<p>Internal Server Error</p>')
-  }
-
-})
-
-
-app.put('/books/edit/:id', async (req, res)=>{
-  
-  try{
-    const {id} = req.params;
-    const book = await Book.findByIdAndUpdate(id, {
-      title: req.body.title,
-      author: req.body.author,
-    }, {new: true})
-    if(!book)return res.status(404).send('<p>book not found</p>')
-      res.json({ message: "Book updated successfully", book})
-  }catch(err) {
-    console.error(err)
-  };
-})
-
-app.delete('/books/:id', async (req, res) => {
-  try {
-    const {id} = req.params
-    const book = await Book.findByIdAndDelete(id)
-    // res.redirect('/books')
-    res.status(200).json({redirectUrl: '/books'})
-  } catch (error) {
-    console.log("Error Occurred When Deleting:", error)
-    res.status(500).json({message: err.message})
-  }
-})

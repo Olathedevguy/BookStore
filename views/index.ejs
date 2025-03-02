@@ -10,9 +10,24 @@
     <%- include("../partials/navbar.ejs") -%>
 <body>
     <div class="home">
-    <h1> welcome to BookStore</h1>
+        <div class="wls">
+
+            <h1> welcome to BookStore , <%= email %></h1>
+
+            <div>
+                <% if (email !== 'Guest') {%>
+                    <a class="login" href="/logout">Logout</a>
+                <% }else{ %>
+                <a href="/login" class="login">Login</a>
+                <a href="/signup" class="signup">signup</a>
+                <% } %>
+            </div>
+         
+
+        </div>
     <h2>We've got the books you'd love to read.</h2>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex quibusdam aliquid dolore voluptates delectus possimus, doloribus quasi qui odit dolores, dignissimos similique! Est placeat totam deserunt ullam corrupti, nisi quaerat fuga minus libero earum ipsum enim numquam neque ea dolore, recusandae praesentium laboriosam quos similique laborum incidunt facere. Inventore unde mollitia odit earum sit. Ratione impedit, rem cumque nulla doloribus consequuntur dolor unde ducimus obcaecati reiciendis animi, natus dolorem qui ex quis, repudiandae in. Quibusdam cum ut necessitatibus veniam culpa consectetur vitae rerum eveniet quam maxime quis nostrum praesentium omnis quisquam neque minima tempore, molestias saepe exercitationem qui labore voluptatem. Enim obcaecati temporibus ea placeat nisi ut animi veniam non. Est molestiae quas commodi culpa! Beatae voluptas suscipit cupiditate, blanditiis accusantium totam, nobis, quae maiores error nulla exercitationem maxime alias quasi. Porro odit vero, ratione harum temporibus totam hic exercitationem repudiandae ipsa magnam consequuntur ullam, consequatur, blanditiis iusto praesentium facilis similique velit ut. Voluptate inventore perferendis ipsa cum. Consequatur doloribus, id tempore, inventore consequuntur sapiente ratione obcaecati ad magni dignissimos unde veritatis voluptates similique amet animi earum qui assumenda. Nulla animi cum earum architecto voluptates, numquam aliquam voluptatum ipsum iure libero error voluptatem consectetur et ex, maxime pariatur doloremque perferendis iste, facilis molestiae! Molestias laudantium veniam sequi aperiam facere quibusdam ipsum quos iusto nulla ut pariatur rem nesciunt, cumque cum distinctio reiciendis nam officiis facilis qui illum optio sit velit. Minima ducimus at corporis quisquam omnis accusamus esse saepe, officia itaque explicabo ullam porro tempore vel delectus fuga voluptas consequatur enim maiores obcaecati deserunt excepturi rerum laudantium expedita in. Exercitationem ex eum rem maxime obcaecati saepe animi soluta, laudantium expedita harum! Saepe aspernatur eveniet repudiandae iusto numquam obcaecati nisi aliquid molestiae, voluptatem omnis quod sed temporibus hic laboriosam ab possimus dignissimos eum iste dolorem molestias dolor? Explicabo quis corrupti quo?</p>
+
 </div>
 </body>
 </html>
